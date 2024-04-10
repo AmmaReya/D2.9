@@ -1,0 +1,49 @@
+us1 = User.objects.create_user('Пользователь 1')
+us2 = User.objects.create_user('Пользователь 2')
+
+a1 = Author.objects.create(author=us1)
+a2 = Author.objects.create(author=us2)
+
+cat1 = Category.objects.create(tag='Погода')
+cat2 = Category.objects.create(tag='Политика')
+cat3 = Category.objects.create(tag='Экономика')
+cat4 = Category.objects.create(tag='Наука')
+
+p1 = Post.objects.create(author=a1, genre='AR', title='Заголовок статьи 1', text='Содержание статьи 1')
+p2 = Post.objects.create(author=a1, genre='AR', title='Заголовок статьи 2', text='Содержание статьи 2')
+p3 = Post.objects.create(author=a2, genre='NE', title='Заголовок новости 1', text='Содержание новости 1')
+
+p1.post_category.add(cat1,cat2)
+p2.post_category.add(cat3,cat4)
+p3.post_category.add(cat2,cat3)
+
+com1 = Comment.objects.create(text_comment='Комментарий 1', post=p1, user=us2)
+com2 = Comment.objects.create(text_comment='Комментарий 2', post=p2, user=us1)
+com3 = Comment.objects.create(text_comment='Комментарий 3', post=p3, user=us2)
+com4 = Comment.objects.create(text_comment='Комментарий 4', post=p3, user=us1)
+
+p1.like()
+p2.like()
+p3.like()
+p3.like()
+p1.like()
+p3.dislake()
+
+com1.like()
+com1.like()
+com1.like()
+com2.like()
+com2.dislike()
+com3.like()
+com4.like()
+
+a1.update_rating()
+a2.update_rating()
+
+Author.objects.order_by('-rating').values('author__username', 'rating')[0]
+
+Post.objects.order_by('-rating').values('post_time_in','author__author__username', 'rating', 'title')[0]
+Post.objects.order_by('-rating')[0].preview()
+
+Post.objects.order_by('-rating')[0].comment_set.all().values('comment_time_in','user__username','rating','text_comment')
+
